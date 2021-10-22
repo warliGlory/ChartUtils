@@ -49,17 +49,17 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        <dependency>
-            <groupId>wangl.apache.poi</groupId>
-            <artifactId>wlpoi</artifactId>
-            <version>3.17</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi</artifactId>-->
+<!--            <version>3.17</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>wangl.apache.poi</groupId>
-            <artifactId>wlpoi-ooxml</artifactId>
-            <version>3.17</version>
-        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml</artifactId>-->
+<!--            <version>3.17</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -71,33 +71,8 @@
             <artifactId>poi-ooxml</artifactId>
             <version>0.17</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>fr.opensagres.xdocreport</groupId>-->
-<!--            <artifactId>xdocreport</artifactId>-->
-<!--            <version>1.0.6</version>-->
-<!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>poi-scratchpad</artifactId>-->
-<!--            <version>3.17</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>poi-ooxml-schemas</artifactId>-->
-<!--            <version>3.17</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>ooxml-schemas</artifactId>-->
-<!--            <version>1.3</version>-->
-<!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId> fr.opensagres.xdocreport</groupId>-->
-<!--            <artifactId> org.apache.poi.xwpf.converter.core</artifactId>-->
-<!--            <version> 1.0.6</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>fr.opensagres.xdocreport</groupId>
             <artifactId>org.apache.poi.xwpf.converter.xhtml</artifactId>
@@ -111,13 +86,6 @@
             <scope>test</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--             <groupId>org.springframework.boot</groupId>-->
-<!--             <artifactId>spring-boot-dependencies</artifactId>-->
-<!--             <version>2.0.2.RELEASE</version>-->
-<!--             <scope>import</scope>-->
-<!--             <type>pom</type>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
