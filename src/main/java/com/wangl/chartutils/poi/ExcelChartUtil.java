@@ -1,23 +1,25 @@
 package com.wangl.chartutils.poi;
 
 
+
+import com.wangl.chartutils.poi.ClassType;
 import com.wangl.chartutils.poi.config.CellConfigBean;
 import com.wangl.chartutils.poi.config.ChartCellConfig;
 import com.wangl.chartutils.poi.config.ExcelName;
 import com.wangl.chartutils.poi.utils.ChartType;
 import com.wangl.chartutils.poi.utils.CheckUtil;
 import com.wangl.chartutils.poi.utils.ListUtil;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.streaming.SXSSFRow;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.*;
 
+import wangl.apache.poi.ss.usermodel.*;
+import wangl.apache.poi.ss.util.CellRangeAddress;
+import wangl.apache.poi.xssf.streaming.SXSSFRow;
+import wangl.apache.poi.xssf.streaming.SXSSFSheet;
+import wangl.apache.poi.xssf.streaming.SXSSFWorkbook;
+import wangl.apache.poi.xssf.usermodel.XSSFChart;
+import wangl.apache.poi.xssf.usermodel.XSSFColor;
+
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -46,8 +48,14 @@ public class ExcelChartUtil {
     String tempPaht = "/temp/zebra/";
     //是否单独只要表格
     private boolean isTable = false;
+    //是否单独只要图表
+    private boolean isChart = false;
 
     private String fileName = "default";
+
+    private int[] xIndex;
+
+    private String sheetName ="";
 
     private void handleChart(List<?> beanList,String chartType){
 
@@ -59,6 +67,9 @@ public class ExcelChartUtil {
 
         generateExport(beanList.get(0).getClass());
         if(cellConfigBeanList==null) return;
+
+        setAxisChar(xIndex);
+
         // 字段名
         List<Integer> fldNameArr = new ArrayList();
         //定义横坐标分租列
@@ -89,10 +100,19 @@ public class ExcelChartUtil {
                         }
                     }
                 }
+                //如果只需要图表的话就不需要全部数据了
+                if(isChart) continue;
                 //===全部数据===
                 String allValue = "value"+(i+1);
                 if(bean == beanList.get(0)) {
                     dataFormatMap.put(allValue, dataStyle(cellBean));
+                }
+
+                if(dataFormatMap.get(allValue).equals("0.00%")){
+                    BigDecimal value = CheckUtil.isEmpty(fieldValue)? BigDecimal.ZERO:new BigDecimal(fieldValue.toString());
+                    if(value.compareTo(BigDecimal.ZERO)!=0){
+                        fieldValue = value.divide(new BigDecimal(100),4, BigDecimal.ROUND_HALF_UP);
+                    }
                 }
                 allDataMap.put(allValue, fieldValue);
             }
@@ -122,7 +142,6 @@ public class ExcelChartUtil {
         }else{
             createTable();
         }
-        clearData();
     }
 
     public byte[] getExcelBytes(List<?> beanList,String chartType) {
@@ -132,9 +151,11 @@ public class ExcelChartUtil {
 //            FileOutputStream out = new FileOutputStream(new File("D:/jcdemo/" + System.currentTimeMillis() + ".xlsx"));
 //            wb.write(out);
 //            out.close();
-            return getBytes();
+            rByte = getBytes();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            clearData();
         }
         return rByte;
     }
@@ -213,7 +234,7 @@ public class ExcelChartUtil {
      *
      * @throws IOException
      */
-    public void createTable(){
+    private void createTable(){
         // 创建一个sheet页
         sheet = wb.createSheet(fileName);
         drawSheet0Table(sheet);
@@ -225,14 +246,17 @@ public class ExcelChartUtil {
      *
      * @throws IOException
      */
-    public void createBarChart(int col, List<Integer> fldNameArr, List<Map<String, Object>> dataList) {
+    private void createBarChart(int col, List<Integer> fldNameArr, List<Map<String, Object>> dataList) {
         // 创建一个sheet页
-        sheet = wb.createSheet("柱形图");
+        if(!isChart)
+            sheet = wb.createSheet(this.sheetName+"柱形图");
         // drawSheet0Table(sheet,titleArr,fldNameArr,dataList);
         // 堆积=STBarGrouping.STACKED 多组=STBarGrouping.CLUSTERED
         boolean result = drawSheet0Map(sheet, STBarGrouping.CLUSTERED, fldNameArr, dataList, col);
         System.out.println("生成柱状图(堆积or多组)-->" + result);
     }
+
+
     /**
      * 生成柱状图
      *
@@ -252,7 +276,7 @@ public class ExcelChartUtil {
         int count = dataList.size();
         // 获取sheet名称
         String sheetName = sheet.getSheetName();
-        result = drawSheet0Table(sheet);
+        if(!isChart) result = drawSheet0Table(sheet);
         // 创建一个画布
         Drawing<?> drawing = sheet.createDrawingPatriarch();
         // 画一个图区域
@@ -335,6 +359,9 @@ public class ExcelChartUtil {
         // 纵坐标
         CTValAx ctValAx = ctPlotArea.addNewValAx();
         ctValAx.addNewAxId().setVal(123457); // id of the val axis
+        ctValAx.addNewMajorGridlines().addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(
+                new XSSFColor(new java.awt.Color(0 , 176, 240)).getRGB());
+
         ctScaling = ctValAx.addNewScaling();
         ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
         // 设置位置
@@ -359,10 +386,10 @@ public class ExcelChartUtil {
      * @throws IOException
      */
 
-    public void createAreaChart(int col, List<Integer> fldNameArr,
-                                List<Map<String, Object>> dataList) {
+    private void createAreaChart(int col, List<Integer> fldNameArr,
+                                 List<Map<String, Object>> dataList) {
         // 创建一个sheet页
-        sheet = wb.createSheet("面积图");
+        sheet = wb.createSheet(this.sheetName+"面积图");
         boolean result = drawSheet1Map(sheet, "is3D", fldNameArr, dataList, col);
         System.out.println("生成面积图-->" + result);
     }
@@ -473,9 +500,9 @@ public class ExcelChartUtil {
      *
      * @throws IOException
      */
-    public void createPieChart(int col, List<Integer> fldNameArr, List<Map<String, Object>> dataList) {
+    private void createPieChart(int col, List<Integer> fldNameArr, List<Map<String, Object>> dataList) {
         // 创建一个sheet页
-        sheet = wb.createSheet("饼状图");
+        sheet = wb.createSheet(this.sheetName+"饼状图");
         boolean result = drawSheet2Map(sheet, "is3D", fldNameArr, dataList, col);
         System.out.println("生成饼状图(普通or3D)-->" + result);
     }
@@ -567,9 +594,9 @@ public class ExcelChartUtil {
      *
      * @throws IOException
      */
-    public void createTimeXYChar(int col, List<Integer> fldNameArr, List<Map<String, Object>> dataList) {
+    private void createTimeXYChar(int col, List<Integer> fldNameArr, List<Map<String, Object>> dataList) {
         // 创建一个sheet页
-        sheet = wb.createSheet("折线图");
+        sheet = wb.createSheet(this.sheetName+"折线图");
         // 第二个参数折线图类型:line=普通折线图,line-bar=折线+柱状图
         boolean result = drawSheet3Map(sheet, "line", fldNameArr, dataList, col);
         System.out.println("生成折线图(折线图or折线图-柱状图)-->" + result);
@@ -785,6 +812,7 @@ public class ExcelChartUtil {
                 // 判断是否是标题字段列
                 String key = "value" + (j + 1);
                 Object param = data.get(key);
+                if(param==null) param="";
                 //rowi.createCell(j).setCellValue(Double.valueOf(String.valueOf(data.get("value" + (j + 1)))));
                 if(ClassType.DATE.validateType(param)){
                     rowi.createCell(j).setCellValue((Date) param);
@@ -853,18 +881,21 @@ public class ExcelChartUtil {
     private String dataStyle(CellConfigBean cellBean){
         String type = cellBean.getFieldType();
         String dateFormat = "";
-        if(type.equals("Date")){
-            dateFormat = "yyyy/MM/dd";
-        }else if(type.equals("int")||type.equals("Long")){
-            dateFormat = isThousandth?"#,##0":"0";
-        }else if(type.equals("double")||type.equals("float")){
-            dateFormat = isThousandth?"#,##0.00":"0.00";
-        }else if(type.equals("BigDecimal")){
-            dateFormat = isThousandth?"#,##0.0000":"0.0000";
-        }else{
-            dateFormat = "@";
+        if(!CheckUtil.isEmpty(cellBean.getFormat())){
+            dateFormat=cellBean.getFormat();
+        }else {
+            if (type.equals("Date")) {
+                dateFormat = "yyyy/MM/dd";
+            } else if (type.equals("int") || type.equals("Long")) {
+                dateFormat = isThousandth ? "#,##0" : "0";
+            } else if (type.equals("double") || type.equals("float")) {
+                dateFormat = isThousandth ? "#,##0.00" : "0.00";
+            } else if (type.equals("BigDecimal")) {
+                dateFormat = isThousandth ? "#,##0.0000" : "0.0000";
+            } else {
+                dateFormat = "@";
+            }
         }
-        dateFormat = CheckUtil.isEmpty(cellBean.getFormat())?dateFormat:cellBean.getFormat();
         return dateFormat;
     }
 
@@ -884,9 +915,28 @@ public class ExcelChartUtil {
     }
 
     private void clearData(){
+        cellConfigBeanList.clear();
         allTitleArr.clear();
         allDataList.clear();
         dataFormatMap.clear();
+        xIndex = null;
+        isTable = false;
+        isChart = false;
+    }
+
+    //设置横坐标的属性
+    private void setAxisChar(int... index){
+
+        if(index==null)return;
+
+        cellConfigBeanList.forEach(config->{
+            if(config.isAxisChar())
+                config.setAxisChar(false);
+        });
+
+        for (int i : index) {
+            cellConfigBeanList.get(i).setAxisChar(true);
+        }
     }
 
     public void setCharCount(int charCount) {
@@ -908,4 +958,18 @@ public class ExcelChartUtil {
     public String getFileName() {
         return fileName;
     }
+
+    public void setxIndex(int... xIndex) {
+        this.xIndex = xIndex;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    public void setChart(SXSSFSheet sheet) {
+        this.isChart = true;
+        this.sheet = sheet;
+    }
+
 }

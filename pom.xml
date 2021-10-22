@@ -4,14 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wangl.chart.untis</groupId>
-    <artifactId>chart-untis</artifactId>
+    <groupId>com.wangl.chart.utils</groupId>
+    <artifactId>chart-utils</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <encoding>UTF-8</encoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.41</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -30,6 +38,7 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.10.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <!--test-->
@@ -37,68 +46,161 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>provided</scope>
+        </dependency>
+
+<!--        <dependency>
+            <groupId>wangl.apache.poi</groupId>
+            <artifactId>wlpoi</artifactId>
+            <version>3.17</version>
+        </dependency>
+
+        <dependency>
+            <groupId>wangl.apache.poi</groupId>
+            <artifactId>wlpoi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>0.17</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
+            <version>0.17</version>
         </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>xdocreport</artifactId>
-            <version>1.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId> fr.opensagres.xdocreport</groupId>
-            <artifactId> org.apache.poi.xwpf.converter.core</artifactId>
-            <version> 1.0.6</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>fr.opensagres.xdocreport</groupId>-->
+<!--            <artifactId>xdocreport</artifactId>-->
+<!--            <version>1.0.6</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-scratchpad</artifactId>-->
+<!--            <version>3.17</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml-schemas</artifactId>-->
+<!--            <version>3.17</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>ooxml-schemas</artifactId>-->
+<!--            <version>1.3</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId> fr.opensagres.xdocreport</groupId>-->
+<!--            <artifactId> org.apache.poi.xwpf.converter.core</artifactId>-->
+<!--            <version> 1.0.6</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>fr.opensagres.xdocreport</groupId>
             <artifactId>org.apache.poi.xwpf.converter.xhtml</artifactId>
             <version>1.0.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>ooxml-schemas</artifactId>
-            <version>1.3</version>
-        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
 
-        <dependency>
-             <groupId>org.springframework.boot</groupId>
-             <artifactId>spring-boot-dependencies</artifactId>
-             <version>2.0.2.RELEASE</version>
-             <scope>import</scope>
-             <type>pom</type>
-        </dependency>
+<!--        <dependency>-->
+<!--             <groupId>org.springframework.boot</groupId>-->
+<!--             <artifactId>spring-boot-dependencies</artifactId>-->
+<!--             <version>2.0.2.RELEASE</version>-->
+<!--             <scope>import</scope>-->
+<!--             <type>pom</type>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.20</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.1.1</version>-->
+<!--                <executions>-->
+<!--                    &lt;!&ndash;执行器 mvn assembly:assembly &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>release</id>-->
+<!--                        &lt;!&ndash;名字任意 &ndash;&gt;-->
+<!--                        <phase>package</phase>-->
+<!--                        &lt;!&ndash; 绑定到package生命周期阶段上 &ndash;&gt;-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                            &lt;!&ndash; 只运行一次 &ndash;&gt;-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <descriptors>-->
+<!--                                &lt;!&ndash;描述文件路径 &ndash;&gt;-->
+<!--                                <descriptor>release.xml</descriptor>-->
+<!--                            </descriptors>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <skipTests>true</skipTests>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.1.1</version>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            <mainClass></mainClass>-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id> &lt;!&ndash; this is used for inheritance merges &ndash;&gt;-->
+<!--                        <phase>package</phase> &lt;!&ndash; 指定在打包节点执行jar包合并操作 &ndash;&gt;-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
 
 </project>

@@ -18,13 +18,13 @@ public class TestBean {
 
     @ChartCellConfig(index = 1, isChart = true,aliasName = "资源池名称", axisChar = true)
     private String poolId;
-    @ChartCellConfig(index = 0, isChart = true,aliasName = "cpu利用率")
+    @ChartCellConfig(index = 0, isChart = true,aliasName = "cpu利用率", format = "0.00%")
     private double cpu;
-    @ChartCellConfig(index = 3, isChart = true,aliasName = "men利用率")
+    @ChartCellConfig(index = 3, isChart = true,aliasName = "men利用率", format = "0.00%")
     private double men;
-    @ChartCellConfig(index = 2, isChart = true,aliasName = "disk利用率")
+    @ChartCellConfig(index = 2, isChart = true,aliasName = "disk利用率", format = "0.00%")
     private double disk;
-    @ChartCellConfig(index = 4, isChart = true,aliasName = "统计")
+    @ChartCellConfig(index = 4, isChart = true,aliasName = "统计",format = "0.00%")
     private double count;
     @ChartCellConfig(index = 5, isChart = false,aliasName = "intD")
     private int intD;
