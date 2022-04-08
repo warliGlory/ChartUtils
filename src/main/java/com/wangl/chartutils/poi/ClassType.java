@@ -7,6 +7,7 @@ package com.wangl.chartutils.poi;
 **/
 public enum  ClassType {
 
+
     BYTE("Byte"),
     SHORT("Short"),
     INT("Integer"),
